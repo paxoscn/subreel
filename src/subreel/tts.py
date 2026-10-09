@@ -96,6 +96,24 @@ async def _synthesize_async(
     return WordsData(words=words, language=infer_language(voice), source="edge-tts")
 
 
+#: punctuation that edge-tts keeps *inside* a spoken token, e.g. the dot of
+#: "4.1" or the hyphen of "e-mail" — never a line-break hint.
+_INTRA_WORD = ".-'’"
+
+
+def _spoken_char(src: List[str], i: int) -> bool:
+    """True when ``src[i]`` is part of a spoken token, not punctuation."""
+    ch = src[i]
+    if ch.isalnum():
+        return True
+    return (
+        ch in _INTRA_WORD
+        and 0 < i < len(src) - 1
+        and src[i - 1].isalnum()
+        and src[i + 1].isalnum()
+    )
+
+
 def _merge_punctuation(text: str, words: List[Word]) -> List[Word]:
     """Glue source-text punctuation onto the neighbouring spoken words.
 
@@ -105,11 +123,14 @@ def _merge_punctuation(text: str, words: List[Word]) -> List[Word]:
     punctuation, and it aligns 1:1 with the boundary stream once punctuation
     and whitespace are stripped, so each punctuation run is re-attached to the
     word spoken just before it (leading runs go to the first word, trailing
-    runs to the last).  Returns ``words`` unchanged when the two streams do
-    not align — a defensive fallback, never a crash.
+    runs to the last).  Characters of :data:`_INTRA_WORD` sandwiched between
+    alphanumerics count as spoken ("4.1", "e-mail").  Returns ``words``
+    unchanged when the two streams do not align — a defensive fallback, never
+    a crash.
     """
     src = [ch for ch in text if not ch.isspace()]
-    spoken = "".join(ch for ch in src if ch.isalnum())
+    spoken_flags = [_spoken_char(src, i) for i in range(len(src))]
+    spoken = "".join(ch for ch, f in zip(src, spoken_flags) if f)
     if spoken != "".join(w.text for w in words):
         return words
 
@@ -117,7 +138,7 @@ def _merge_punctuation(text: str, words: List[Word]) -> List[Word]:
     pending: List[str] = []
     ci = 0
     for w in words:
-        while ci < len(src) and not src[ci].isalnum():
+        while ci < len(src) and not spoken_flags[ci]:
             pending.append(src[ci])
             ci += 1
         new_text = w.text
@@ -131,7 +152,7 @@ def _merge_punctuation(text: str, words: List[Word]) -> List[Word]:
             pending = []
         ci += len(w.text)
         out.append(Word(new_text, w.start, w.end))
-    while ci < len(src) and not src[ci].isalnum():
+    while ci < len(src) and not spoken_flags[ci]:
         pending.append(src[ci])
         ci += 1
     if pending and out:

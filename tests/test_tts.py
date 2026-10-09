@@ -159,3 +159,30 @@ def test_punctuation_merge_falls_back_on_mismatch(tmp_path, monkeypatch):
         out=str(tmp_path / "v.mp3"),
     )
     assert [w.text for w in data.words] == ["你", "好", "世", "界"]
+
+
+class _DotFakeCommunicate(_FakeCommunicate):
+    """'模型使用4.1 Flash。' — boundary tokens keep the intra-word dot."""
+
+    async def stream(self):
+        yield {"type": "audio", "data": b"A"}
+        for i, tok in enumerate(["模型", "使用", "4.1", "Flash"]):
+            yield {
+                "type": "WordBoundary",
+                "offset": (1_000_000 + i * 2_000_000),
+                "duration": 2_000_000,
+                "text": tok,
+            }
+
+
+def test_intra_word_dot_does_not_break_alignment(tmp_path, monkeypatch):
+    mod = types.ModuleType("edge_tts")
+    mod.Communicate = _DotFakeCommunicate
+    monkeypatch.setitem(sys.modules, "edge_tts", mod)
+
+    data = synthesize(
+        "模型使用4.1 Flash。",
+        voice="zh-CN-XiaoxiaoNeural",
+        out=str(tmp_path / "v.mp3"),
+    )
+    assert [w.text for w in data.words] == ["模型", "使用", "4.1", "Flash。"]
