@@ -100,7 +100,12 @@ pip install "subreel[tts,asr]"
 
 ## Quick start
 
+Each scenario has a diagram; the editable source lives in
+[`docs/slides/`](docs/slides/).
+
 ### A. Synthesize *and* render (most accurate)
+
+![Scenario A — script.txt is turned into a voice-over plus exact word timings, then rendered](docs/images/scenario-a-write-script.png)
 
 ```bash
 # 1. make the voice-over plus its exact word timings
@@ -121,6 +126,8 @@ subreel render voice.mp3 \
 
 ### B. You already have audio — let Whisper transcribe it
 
+![Scenario B — an existing recording is transcribed by Whisper, then rendered](docs/images/scenario-b-transcribe-audio.png)
+
 ```bash
 subreel render narration.m4a --asr --asr-model small --formats green,webm
 ```
@@ -129,6 +136,8 @@ The recognised timings are cached to `out/narration.words.json` and reused on
 the next run (pass `--force-asr` to re-run).
 
 ### C. You already have timings
+
+![Scenario C — bring your own words.json timings and render](docs/images/scenario-c-bring-timings.png)
 
 Any tool that emits the [`words.json`](#wordsjson-timing-format) format can
 drive subreel:

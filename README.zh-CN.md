@@ -94,7 +94,11 @@ pip install "subreel[tts,asr]"
 
 ## 快速开始
 
+每个场景都配了流程图，可编辑源文件在 [`docs/slides/`](docs/slides/)。
+
 ### A. 合成并渲染（最准）
+
+![场景 A —— 文稿合成配音与精确时间轴后再渲染](docs/images/scenario-a-write-script.png)
 
 ```bash
 # 1. 生成配音，并同时得到精确的逐词时间轴
@@ -115,6 +119,8 @@ subreel render voice.mp3 \
 
 ### B. 已有音频 —— 交给 Whisper 识别
 
+![场景 B —— 已有录音交给 Whisper 识别后再渲染](docs/images/scenario-b-transcribe-audio.png)
+
 ```bash
 subreel render narration.m4a --asr --asr-model small --formats green,webm
 ```
@@ -123,6 +129,8 @@ subreel render narration.m4a --asr --asr-model small --formats green,webm
 可强制重跑）。
 
 ### C. 已有时间轴
+
+![场景 C —— 自带 words.json 时间轴直接渲染](docs/images/scenario-c-bring-timings.png)
 
 任何能产出 [`words.json`](#wordsjson-时间轴格式) 格式的工具都能驱动 subreel：
 
