@@ -6,9 +6,8 @@ WebM/ProRes, with word-by-word karaoke highlight.**
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
 [![CI](https://github.com/paxoscn/subreel/actions/workflows/ci.yml/badge.svg)](https://github.com/paxoscn/subreel/actions/workflows/ci.yml)
 [![Python](https://img.shields.io/badge/python-3.9%2B-blue.svg)](https://www.python.org/)
-<!-- Uncomment once the first release is on PyPI (see docs/releasing.md):
 [![PyPI](https://img.shields.io/pypi/v/subreel.svg)](https://pypi.org/project/subreel/)
--->
+[![PyPI - Python versions](https://img.shields.io/pypi/pyversions/subreel.svg)](https://pypi.org/project/subreel/)
 [![No runtime deps](https://img.shields.io/badge/runtime%20deps-none-success.svg)](#installation)
 
 subreel is a small, dependency-free CLI that turns a voice-over into a subtitle
@@ -73,25 +72,26 @@ For CJK subtitles, install a CJK font as well (e.g. `fonts-noto-cjk` on Debian
 
 ### 2. subreel
 
-Packaging is CI-verified: `pip install subreel` works as soon as the first
-release lands on PyPI (see [`docs/releasing.md`](docs/releasing.md)). Until then
-install straight from GitHub:
-
 ```bash
+# from PyPI (recommended)
+pip install subreel
+
+# or the latest development snapshot
 pip install "git+https://github.com/paxoscn/subreel.git"
 ```
 
-With the optional features:
+With the optional features (PyPI extras — when installing from GitHub, append
+them to the URL as `#egg=subreel[tts]`):
 
 ```bash
 # edge-tts synthesis (subreel tts)
-pip install "git+https://github.com/paxoscn/subreel.git#egg=subreel[tts]"
+pip install "subreel[tts]"
 
 # faster-whisper ASR (subreel render --asr)
-pip install "git+https://github.com/paxoscn/subreel.git#egg=subreel[asr]"
+pip install "subreel[asr]"
 
 # both
-pip install "git+https://github.com/paxoscn/subreel.git#egg=subreel[tts,asr]"
+pip install "subreel[tts,asr]"
 ```
 
 ---

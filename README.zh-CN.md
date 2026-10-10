@@ -6,9 +6,8 @@ WebM / ProRes，逐词卡拉OK高亮。**
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
 [![CI](https://github.com/paxoscn/subreel/actions/workflows/ci.yml/badge.svg)](https://github.com/paxoscn/subreel/actions/workflows/ci.yml)
 [![Python](https://img.shields.io/badge/python-3.9%2B-blue.svg)](https://www.python.org/)
-<!-- 首次发布到 PyPI 后取消注释（见 docs/releasing.md）：
 [![PyPI](https://img.shields.io/pypi/v/subreel.svg)](https://pypi.org/project/subreel/)
--->
+[![PyPI - Python versions](https://img.shields.io/pypi/pyversions/subreel.svg)](https://pypi.org/project/subreel/)
 [![No runtime deps](https://img.shields.io/badge/runtime%20deps-none-success.svg)](#安装)
 
 subreel 是一个轻量、零运行依赖的命令行工具，把一段配音变成一个可以直接
@@ -68,24 +67,25 @@ subreel 会调用 `ffmpeg` / `ffprobe`，并在启动时探测是否可用。
 
 ### 2. subreel
 
-打包流程已由 CI 验证：首个版本发布到 PyPI 后 `pip install subreel` 即可
-使用（见 [`docs/releasing.md`](docs/releasing.md)）。在此之前从 GitHub 安装：
-
 ```bash
+# 从 PyPI 安装（推荐）
+pip install subreel
+
+# 或安装最新的开发快照
 pip install "git+https://github.com/paxoscn/subreel.git"
 ```
 
-安装可选功能：
+安装可选功能（PyPI extras——从 GitHub 安装时拼为 `#egg=subreel[tts]`）：
 
 ```bash
 # edge-tts 合成（subreel tts）
-pip install "git+https://github.com/paxoscn/subreel.git#egg=subreel[tts]"
+pip install "subreel[tts]"
 
 # faster-whisper ASR（subreel render --asr）
-pip install "git+https://github.com/paxoscn/subreel.git#egg=subreel[asr]"
+pip install "subreel[asr]"
 
 # 两个都要
-pip install "git+https://github.com/paxoscn/subreel.git#egg=subreel[tts,asr]"
+pip install "subreel[tts,asr]"
 ```
 
 ---
