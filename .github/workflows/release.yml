@@ -1,0 +1,92 @@
+name: Release
+
+# Push a tag like `v0.2.0` to build the distribution, publish it to PyPI via
+# OIDC trusted publishing (no API token stored anywhere) and open a GitHub
+# Release with the artefacts attached.
+#
+# One-time setup: add a *pending publisher* on PyPI
+# (Account → Publishing → Add a pending publisher) with
+#   PyPI project name : subreel
+#   owner             : paxoscn
+#   repository name   : subreel
+#   workflow name     : release.yml
+#   environment name  : pypi
+# Then create the same `pypi` environment under
+# Settings → Environments (no secrets needed for trusted publishing).
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: build · wheel & sdist
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install build tooling
+        run: python -m pip install --upgrade pip build twine
+
+      - name: Build sdist + wheel
+        run: python -m build
+
+      - name: Check metadata
+        run: python -m twine check --strict dist/*
+
+      - name: Smoke-install the wheel
+        run: |
+          python -m venv /tmp/smoke
+          /tmp/smoke/bin/pip install --quiet dist/*.whl
+          /tmp/smoke/bin/subreel --version
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/
+          if-no-files-found: error
+
+  publish-pypi:
+    name: publish · PyPI (trusted publishing)
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/p/subreel
+    permissions:
+      id-token: write # OIDC token for PyPI — the only credential needed
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist/
+
+      - uses: pypa/gh-action-pypi-publish@release/v1
+        # No `password:` on purpose: trusted publishing uses the OIDC token.
+
+  github-release:
+    name: GitHub Release
+    needs: publish-pypi
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist/
+
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: dist/*
+          generate_release_notes: true

@@ -4,7 +4,11 @@
 WebM/ProRes, with word-by-word karaoke highlight.**
 
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
+[![CI](https://github.com/paxoscn/subreel/actions/workflows/ci.yml/badge.svg)](https://github.com/paxoscn/subreel/actions/workflows/ci.yml)
 [![Python](https://img.shields.io/badge/python-3.9%2B-blue.svg)](https://www.python.org/)
+<!-- Uncomment once the first release is on PyPI (see docs/releasing.md):
+[![PyPI](https://img.shields.io/pypi/v/subreel.svg)](https://pypi.org/project/subreel/)
+-->
 [![No runtime deps](https://img.shields.io/badge/runtime%20deps-none-success.svg)](#installation)
 
 subreel is a small, dependency-free CLI that turns a voice-over into a subtitle
@@ -69,7 +73,9 @@ For CJK subtitles, install a CJK font as well (e.g. `fonts-noto-cjk` on Debian
 
 ### 2. subreel
 
-Not on PyPI yet — install straight from GitHub:
+Packaging is CI-verified: `pip install subreel` works as soon as the first
+release lands on PyPI (see [`docs/releasing.md`](docs/releasing.md)). Until then
+install straight from GitHub:
 
 ```bash
 pip install "git+https://github.com/paxoscn/subreel.git"
@@ -303,6 +309,11 @@ python3 -m compileall src/
 ```
 
 The tests mock `edge-tts`, `faster-whisper` and `ffmpeg`, so they run anywhere.
+
+CI ([`.github/workflows/ci.yml`](.github/workflows/ci.yml)) runs the suite on
+Python 3.9–3.13, then builds the sdist + wheel, `twine check --strict`s the
+metadata and smoke-installs the wheel. Release automation (tag → PyPI via OIDC
+trusted publishing) is documented in [`docs/releasing.md`](docs/releasing.md).
 
 ---
 

@@ -7,6 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- GitHub Actions CI (`.github/workflows/ci.yml`): pytest on Python 3.9–3.13,
+  byte-compile check, plus a packaging job that builds the sdist + wheel,
+  runs `twine check --strict` and smoke-installs the wheel.
+- Release workflow (`.github/workflows/release.yml`): pushing a `v*` tag
+  publishes to PyPI via OIDC trusted publishing (no stored token) and opens a
+  GitHub Release with the artefacts attached.
+- `docs/releasing.md` — one-time PyPI trusted-publisher setup and the release
+  checklist.
+
+### Changed
+
+- Packaging metadata modernised to PEP 639: `license = "Apache-2.0"` and
+  `license-files` replace the legacy table form; the build backend now requires
+  `setuptools>=77`.
+
 ## [0.1.0] - 2026-09-29
 
 ### Added

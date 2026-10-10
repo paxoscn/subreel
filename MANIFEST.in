@@ -1,0 +1,7 @@
+# Files that belong in the sdist on top of what setuptools auto-includes
+# (README.md, LICENSE, pyproject.toml and the package sources).
+include CHANGELOG.md
+include README.zh-CN.md
+recursive-include docs *.md
+recursive-include tests *.py
+exclude .github
