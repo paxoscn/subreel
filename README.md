@@ -1,5 +1,7 @@
 # subreel
 
+**English** · [中文](README.zh-CN.md)
+
 **Turn speech audio into subtitle reels: green-screen H.264, transparent
 WebM/ProRes, with word-by-word karaoke highlight.**
 

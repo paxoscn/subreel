@@ -1,5 +1,7 @@
 # subreel
 
+[English](README.md) · **中文**
+
 **把语音音频变成可直接用于视频合成的字幕素材：绿幕 H.264、透明
 WebM / ProRes，逐词卡拉OK高亮。**
 
