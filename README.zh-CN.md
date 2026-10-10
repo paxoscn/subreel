@@ -3,7 +3,7 @@
 **把语音音频变成可直接用于视频合成的字幕素材：绿幕 H.264、透明
 WebM / ProRes，逐词卡拉OK高亮。**
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
 [![Python](https://img.shields.io/badge/python-3.9%2B-blue.svg)](https://www.python.org/)
 [![No runtime deps](https://img.shields.io/badge/runtime%20deps-none-success.svg)](#安装)
 
@@ -295,7 +295,7 @@ python3 -m compileall src/
 
 ## 许可证
 
-[MIT](LICENSE) © 2026 paxoscn
+[Apache-2.0](LICENSE) © 2026 paxoscn
 
 ---
 

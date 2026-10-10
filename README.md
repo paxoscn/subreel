@@ -3,7 +3,7 @@
 **Turn speech audio into subtitle reels: green-screen H.264, transparent
 WebM/ProRes, with word-by-word karaoke highlight.**
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
 [![Python](https://img.shields.io/badge/python-3.9%2B-blue.svg)](https://www.python.org/)
 [![No runtime deps](https://img.shields.io/badge/runtime%20deps-none-success.svg)](#installation)
 
@@ -308,7 +308,7 @@ The tests mock `edge-tts`, `faster-whisper` and `ffmpeg`, so they run anywhere.
 
 ## License
 
-[MIT](LICENSE) © 2026 paxoscn
+[Apache-2.0](LICENSE) © 2026 paxoscn
 
 ---
 
