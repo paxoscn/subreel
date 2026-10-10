@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>subreel — 三种使用场景</title>
+<style>
+  :root{
+    --green:#00B140;
+    --green-d:#00702A;
+    --ink:#0B1A10;
+    --muted:#5C6E62;
+    --line:#DFE7E1;
+    --bg:#F5F8F6;
+    --card:#FFFFFF;
+    --dark:#0D1B12;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{background:var(--bg);font-family:"Noto Sans CJK SC","Noto Sans SC",sans-serif;-webkit-font-smoothing:antialiased}
+  .mono{font-family:"Noto Sans Mono CJK SC",ui-monospace,monospace}
+
+  .slide{
+    width:1920px;height:1080px;background:var(--bg);
+    padding:60px 80px 44px;display:flex;flex-direction:column;gap:34px;
+    position:relative;overflow:hidden;
+  }
+  .slide::after{ /* soft green wash bottom-left */
+    content:"";position:absolute;left:-160px;bottom:-220px;width:620px;height:620px;
+    background:radial-gradient(circle,rgba(0,177,64,.10),rgba(0,177,64,0) 68%);
+    pointer-events:none;
+  }
+  .num{
+    position:absolute;right:70px;top:38px;font-family:"Noto Sans Mono CJK SC",monospace;
+    font-size:26px;color:#B9C7BE;letter-spacing:2px;
+  }
+
+  /* ---------- header ---------- */
+  .head{display:flex;flex-direction:column;gap:16px}
+  .chip{
+    align-self:flex-start;display:inline-flex;align-items:center;gap:10px;
+    background:rgba(0,177,64,.12);color:#00702A;border:1px solid rgba(0,177,64,.35);
+    padding:9px 20px;border-radius:999px;font-size:22px;font-weight:600;letter-spacing:1px;
+  }
+  .chip b{font-family:"Noto Sans Mono CJK SC",monospace;font-size:24px}
+  h1{font-size:52px;line-height:1.18;color:var(--ink);font-weight:700;letter-spacing:.5px}
+  h1 em{font-style:normal;color:var(--green)}
+  .sub{font-size:25px;color:var(--muted);line-height:1.5;max-width:1500px}
+
+  /* ---------- flow ---------- */
+  .flow{
+    flex:1;display:grid;grid-template-columns:470px 1fr 470px 1fr 470px;
+    align-items:stretch;gap:0;
+  }
+  .panel{
+    background:var(--card);border:1px solid var(--line);border-radius:22px;
+    padding:26px 28px;display:flex;flex-direction:column;gap:18px;
+    box-shadow:0 10px 30px rgba(11,26,16,.05);min-width:0;
+  }
+  .label{
+    font-size:20px;font-weight:700;letter-spacing:2px;color:var(--muted);
+    text-transform:uppercase;display:flex;align-items:center;gap:10px;
+  }
+  .label i{width:10px;height:10px;border-radius:50%;background:var(--green);display:block}
+
+  /* arrows */
+  .arrow{display:flex;align-items:center;justify-content:center}
+  .arrow svg{width:100%;height:56px}
+  .arrow .tag{
+    position:absolute;font-size:18px;color:#9AA9A0;letter-spacing:1px;
+  }
+
+  /* input: file card */
+  .file{border:1px solid var(--line);border-radius:14px;overflow:hidden;background:#FBFDFC}
+  .file .bar{
+    display:flex;align-items:center;gap:10px;padding:12px 16px;background:#EEF4F0;
+    border-bottom:1px solid var(--line);font-size:19px;color:#3E4F45;
+    font-family:"Noto Sans Mono CJK SC",monospace;
+  }
+  .file .bar b{font-weight:700;color:var(--ink)}
+  .file pre{padding:16px 18px;font-size:17px;line-height:1.62;color:#33443A;white-space:pre-wrap}
+  .file pre .k{color:#00702A}
+  .file pre .s{color:#9A6B00}
+
+  /* input: speech bubble (场景 B) */
+  .bubblewrap{display:flex;flex-direction:column;gap:14px;align-items:flex-start}
+  .bubble{
+    position:relative;background:#EAF7EF;border:1px solid rgba(0,177,64,.35);
+    border-radius:20px 20px 20px 6px;padding:22px 24px;font-size:24px;line-height:1.55;
+    color:#123A22;
+  }
+  .bubble::after{
+    content:"";position:absolute;left:-2px;bottom:-16px;width:26px;height:16px;
+    background:#EAF7EF;border-left:1px solid rgba(0,177,64,.35);
+    border-bottom:1px solid rgba(0,177,64,.35);border-radius:0 0 0 14px;
+    transform:skewX(0deg);
+  }
+  .bubble::before{
+    content:"";position:absolute;left:10px;bottom:-11px;width:14px;height:14px;
+    background:#EAF7EF;border-radius:50%;
+  }
+  .speaker{display:flex;align-items:center;gap:14px;margin-top:8px}
+  .speaker .dot{
+    width:52px;height:52px;border-radius:50%;background:var(--green);color:#fff;
+    display:flex;align-items:center;justify-content:center;font-size:26px;
+  }
+  .speaker .who{font-size:19px;color:var(--muted)}
+  .speaker .who b{display:block;font-size:21px;color:var(--ink)}
+
+  /* chips row */
+  .pills{display:flex;flex-wrap:wrap;gap:10px;margin-top:auto}
+  .pill{
+    font-family:"Noto Sans Mono CJK SC",monospace;font-size:18px;
+    background:#F1F5F2;border:1px solid var(--line);color:#41564A;
+    padding:7px 14px;border-radius:9px;
+  }
+  .pill.on{background:rgba(0,177,64,.14);border-color:rgba(0,177,64,.4);color:#00681F;font-weight:600}
+
+  /* core panel */
+  .core{
+    background:var(--dark);border:none;color:#DCEFE2;
+    box-shadow:0 18px 44px rgba(11,26,16,.22);
+    align-items:center;justify-content:center;text-align:center;gap:22px;
+  }
+  .core .name{
+    font-family:"Noto Sans Mono CJK SC",monospace;font-size:42px;font-weight:700;
+    color:#fff;letter-spacing:3px;
+  }
+  .core .name span{color:var(--green)}
+  .core .ver{font-size:19px;color:#7E9B8A;font-family:"Noto Sans Mono CJK SC",monospace;letter-spacing:1px}
+  .core .cmd{
+    width:100%;background:#08120C;border:1px solid #1E3527;border-radius:14px;
+    padding:18px 20px;text-align:left;font-family:"Noto Sans Mono CJK SC",monospace;
+    font-size:16.5px;line-height:1.62;color:#8FE0A8;white-space:pre;overflow-wrap:normal;
+  }
+  .core .cmd .c{color:#5C7D69}
+  .core .cmd .f{color:#FFD479}
+  .core .note{font-size:18px;color:#88A395;line-height:1.55}
+
+  /* output panel */
+  .shotwrap{position:relative;border-radius:14px;overflow:hidden;border:1px solid var(--line);background:var(--green)}
+  .shotwrap img{display:block;width:100%;height:auto}
+  .shotwrap .badge{
+    position:absolute;left:12px;top:12px;background:rgba(8,18,12,.72);color:#B9F5CE;
+    font-family:"Noto Sans Mono CJK SC",monospace;font-size:16px;padding:6px 12px;border-radius:8px;
+  }
+  .cap{font-size:21px;color:var(--ink);font-weight:600}
+  .cap span{display:block;font-size:19px;color:var(--muted);font-weight:400;margin-top:4px}
+
+  /* footer */
+  .foot{
+    display:flex;align-items:center;justify-content:space-between;gap:24px;
+    border-top:1px solid var(--line);padding-top:20px;font-size:21px;color:var(--muted);
+  }
+  .foot .left{display:flex;align-items:center;gap:16px;font-family:"Noto Sans Mono CJK SC",monospace;font-size:20px}
+  .foot .right{color:#3E4F45}
+  .foot .k{color:#00702A;font-weight:600}
+</style>
+</head>
+<body>
+
+<!-- ================= 场景 A ================= -->
+<section class="slide">
+  <div class="num">01 / 03</div>
+  <div class="head">
+    <div class="chip"><b>场景 A</b> 文稿 → 配音 + 精确时间轴</div>
+    <h1>有文稿：<em>合成配音的同时</em>拿到逐词时间轴</h1>
+    <p class="sub">edge-tts 的 WordBoundary 事件直接给出每个词的真实起止时间，<b>零 ASR 误差</b>——最准的一条路。</p>
+  </div>
+
+  <div class="flow">
+    <div class="panel">
+      <div class="label"><i></i>输入</div>
+      <div class="file">
+        <div class="bar">📄 <b>script.txt</b></div>
+<pre>想看下现在AI对图片的理解能力
+到什么程度了。</pre>
+      </div>
+      <div class="pills">
+        <span class="pill on">subreel tts</span>
+        <span class="pill">voice.mp3</span>
+        <span class="pill">voice.words.json</span>
+      </div>
+    </div>
+
+    <div class="arrow">
+      <svg viewBox="0 0 120 56" fill="none">
+        <path d="M4 28H96" stroke="#00B140" stroke-width="4" stroke-linecap="round"/>
+        <path d="M88 16L106 28L88 40" stroke="#00B140" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+
+    <div class="panel core">
+      <div class="name">sub<span>reel</span></div>
+      <div class="ver">v0.1.0</div>
+      <div class="cmd"><span class="c"># 1. 配音 + 逐词时间轴</span>
+subreel tts --text script.txt \
+  --voice zh-CN-XiaoxiaoNeural \
+  --out voice.mp3
+
+<span class="c"># 2. 渲染三种产物</span>
+subreel render voice.mp3 \
+  --timings voice.words.json \
+  --formats <span class="f">green,webm,mov</span></div>
+      <div class="note">黑描边 · 逐词卡拉OK高亮<br>CJK 标点优先断行</div>
+    </div>
+
+    <div class="arrow">
+      <svg viewBox="0 0 120 56" fill="none">
+        <path d="M4 28H96" stroke="#00B140" stroke-width="4" stroke-linecap="round"/>
+        <path d="M88 16L106 28L88 40" stroke="#00B140" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+
+    <div class="panel">
+      <div class="label"><i></i>成片</div>
+      <div class="shotwrap">
+        <img src="assets/frame-a.png" alt="绿幕成片">
+        <div class="badge">subs-green.mp4 · 1280×720</div>
+      </div>
+      <div class="cap">绿幕成片：整块直接进剪辑软件抠像
+        <span>同一份 ASS 另出透明 WebM（VP9 alpha）与 ProRes 4444 MOV</span>
+      </div>
+      <div class="pills">
+        <span class="pill on">subs-green.mp4</span>
+        <span class="pill">subs-alpha.webm</span>
+        <span class="pill">subs-alpha.mov</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="foot">
+    <div class="left"><span class="k">pip install subreel</span><span>github.com/paxoscn/subreel</span></div>
+    <div class="right">适用：口播稿、科普解说、批量生成系列视频</div>
+  </div>
+</section>
+
+<!-- ================= 场景 B ================= -->
+<section class="slide">
+  <div class="num">02 / 03</div>
+  <div class="head">
+    <div class="chip"><b>场景 B</b> 只有录音 → Whisper 自动转写</div>
+    <h1>已有音频：<em>扔给 subreel</em>，字幕自己长出来</h1>
+    <p class="sub">不用手打稿、不用对齐工具——faster-whisper 直接听写并给出逐词时间轴。</p>
+  </div>
+
+  <div class="flow">
+    <div class="panel">
+      <div class="label"><i></i>输入</div>
+      <div class="bubblewrap">
+        <div class="bubble">好家伙，可以明显看出<br>DeepSeek的脑子是很聪明</div>
+        <div class="speaker">
+          <div class="dot">🎙</div>
+          <div class="who"><b>narration.m4a</b>已录好的旁白 / 访谈录音</div>
+        </div>
+      </div>
+      <div class="pills">
+        <span class="pill on">--asr</span>
+        <span class="pill">--asr-model small</span>
+      </div>
+    </div>
+
+    <div class="arrow">
+      <svg viewBox="0 0 120 56" fill="none">
+        <path d="M4 28H96" stroke="#00B140" stroke-width="4" stroke-linecap="round"/>
+        <path d="M88 16L106 28L88 40" stroke="#00B140" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+
+    <div class="panel core">
+      <div class="name">sub<span>reel</span></div>
+      <div class="ver">faster-whisper 听写</div>
+      <div class="cmd">subreel render narration.m4a \
+  <span class="f">--asr --asr-model small</span> \
+  --formats green,webm</div>
+      <div class="note">识别结果缓存到 out/narration.words.json<br>下次直接复用（--force-asr 可重跑）</div>
+    </div>
+
+    <div class="arrow">
+      <svg viewBox="0 0 120 56" fill="none">
+        <path d="M4 28H96" stroke="#00B140" stroke-width="4" stroke-linecap="round"/>
+        <path d="M88 16L106 28L88 40" stroke="#00B140" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+
+    <div class="panel">
+      <div class="label"><i></i>成片</div>
+      <div class="shotwrap">
+        <img src="assets/frame-b.png" alt="绿幕成片">
+        <div class="badge">subs-green.mp4 · 1280×720</div>
+      </div>
+      <div class="cap">逐词卡拉OK高亮自动跟着语音走
+        <span>缓存下来的 words.json 还能喂给别的工具复用</span>
+      </div>
+      <div class="pills">
+        <span class="pill on">subs-green.mp4</span>
+        <span class="pill">subs-alpha.webm</span>
+        <span class="pill">narration.words.json</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="foot">
+    <div class="left"><span class="k">pip install "subreel[asr]"</span><span>github.com/paxoscn/subreel</span></div>
+    <div class="right">适用：采访、直播切片、已有素材补字幕</div>
+  </div>
+</section>
+
+<!-- ================= 场景 C ================= -->
+<section class="slide">
+  <div class="num">03 / 03</div>
+  <div class="head">
+    <div class="chip"><b>场景 C</b> 已有时间轴 → 直接渲染</div>
+    <h1>时间轴在自己手里：<em>任何工具都能驱动 subreel</em></h1>
+    <p class="sub">只要你的对齐工具能输出 <span class="mono">words.json</span>（Audio2Subtitles、WhisperX、自研对齐都行），subreel 只负责画。</p>
+  </div>
+
+  <div class="flow">
+    <div class="panel">
+      <div class="label"><i></i>输入</div>
+      <div class="file">
+        <div class="bar">🗂 <b>my-alignment.json</b></div>
+<pre>{
+  "words": [
+    {<span class="s">"text"</span>: <span class="k">"那后面拜托它把清明上河图"</span>,
+     <span class="s">"start"</span>: 12.34, <span class="s">"end"</span>: 15.12},
+    {<span class="s">"text"</span>: <span class="k">"全图3D化也是美事一桩"</span>,
+     <span class="s">"start"</span>: 15.12, <span class="s">"end"</span>: 17.60}
+  ]
+}</pre>
+      </div>
+      <div class="pills">
+        <span class="pill on">--timings</span>
+        <span class="pill">voice.mp3</span>
+      </div>
+    </div>
+
+    <div class="arrow">
+      <svg viewBox="0 0 120 56" fill="none">
+        <path d="M4 28H96" stroke="#00B140" stroke-width="4" stroke-linecap="round"/>
+        <path d="M88 16L106 28L88 40" stroke="#00B140" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+
+    <div class="panel core">
+      <div class="name">sub<span>reel</span></div>
+      <div class="ver">只负责渲染</div>
+      <div class="cmd">subreel render voice.mp3 \
+  --timings my-alignment.json \
+  --formats <span class="f">green,webm,mov</span></div>
+      <div class="note">格式、字体、字号、颜色、位置<br>全部可用命令行参数覆盖</div>
+    </div>
+
+    <div class="arrow">
+      <svg viewBox="0 0 120 56" fill="none">
+        <path d="M4 28H96" stroke="#00B140" stroke-width="4" stroke-linecap="round"/>
+        <path d="M88 16L106 28L88 40" stroke="#00B140" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+
+    <div class="panel">
+      <div class="label"><i></i>成片</div>
+      <div class="shotwrap">
+        <img src="assets/frame-c.png" alt="绿幕成片">
+        <div class="badge">subs-green.mp4 · 1280×720</div>
+      </div>
+      <div class="cap">想要透明通道？换 <span class="mono">--formats mov</span> 即可
+        <span>ProRes 4444 带真 alpha，达芬奇 / PR / FCP 通吃</span>
+      </div>
+      <div class="pills">
+        <span class="pill on">subs-alpha.mov</span>
+        <span class="pill">subs-alpha.webm</span>
+        <span class="pill">subs-green.mp4</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="foot">
+    <div class="left"><span class="k">words.json</span><span>docs: README › words.json timing format</span></div>
+    <div class="right">适用：已有对齐数据、批量重渲染、UI 里可视化调样式</div>
+  </div>
+</section>
+
+</body>
+</html>
